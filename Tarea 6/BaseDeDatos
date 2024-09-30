@@ -1,0 +1,163 @@
+import random
+
+# Clase Alumno que contiene los atributos
+class Alumno:
+    def __init__(self, num_cuenta, nombre, edad, correo, semestre, materias, promedio):
+        self.num_cuenta = num_cuenta
+        self.nombre = nombre
+        self.edad = edad
+        self.correo = correo
+        self.semestre = semestre
+        self.materias = materias
+        self.promedio = promedio
+
+    def __str__(self):
+        return f"Cuenta: {self.num_cuenta}, Nombre: {self.nombre}, Promedio: {self.promedio}"
+
+# Nodo del Árbol Binario de Búsqueda (BST)
+class Nodo:
+    def __init__(self, alumno):
+        self.alumno = alumno
+        self.izquierda = None
+        self.derecha = None
+
+# Clase Árbol Binario de Búsqueda (BST)
+class ArbolBinarioBusqueda:
+    def __init__(self):
+        self.raiz = None
+
+    # Inserción de un nuevo alumno en el BST
+    def insertar(self, alumno):
+        if self.raiz is None:
+            self.raiz = Nodo(alumno)
+        else:
+            self._insertar_recursivo(self.raiz, alumno)
+
+    def _insertar_recursivo(self, nodo_actual, alumno):
+        if alumno.num_cuenta < nodo_actual.alumno.num_cuenta:
+            if nodo_actual.izquierda is None:
+                nodo_actual.izquierda = Nodo(alumno)
+            else:
+                self._insertar_recursivo(nodo_actual.izquierda, alumno)
+        elif alumno.num_cuenta > nodo_actual.alumno.num_cuenta:
+            if nodo_actual.derecha is None:
+                nodo_actual.derecha = Nodo(alumno)
+            else:
+                self._insertar_recursivo(nodo_actual.derecha, alumno)
+
+    # Búsqueda de un alumno por número de cuenta
+    def buscar(self, num_cuenta):
+        return self._buscar_recursivo(self.raiz, num_cuenta)
+
+    def _buscar_recursivo(self, nodo_actual, num_cuenta):
+        if nodo_actual is None:
+            return None
+        if nodo_actual.alumno.num_cuenta == num_cuenta:
+            return nodo_actual.alumno
+        elif num_cuenta < nodo_actual.alumno.num_cuenta:
+            return self._buscar_recursivo(nodo_actual.izquierda, num_cuenta)
+        else:
+            return self._buscar_recursivo(nodo_actual.derecha, num_cuenta)
+
+# Estructura para almacenar 100 alumnos antes de pasarlos al árbol
+class BaseDeDatosAlumnos:
+    def __init__(self):
+        self.datos = []
+
+    # Agregar alumnos a la base de datos
+    def agregar_alumno(self, alumno):
+        self.datos.append(alumno)
+
+    # Pasar los alumnos de la base de datos al BST
+    def pasar_a_bst(self, arbol):
+        for alumno in self.datos:
+            arbol.insertar(alumno)
+
+# Función para generar nombres, correos y materias aleatorios
+def generar_nombre():
+    nombres = ["Juan", "Ana", "Pedro", "Luis", "Marta", "Sofia", "Carlos", "Laura", "Elena", "Jorge"]
+    apellidos = ["García", "López", "Martínez", "Rodríguez", "Pérez", "Sánchez", "Ramírez", "Cruz"]
+    return f"{random.choice(nombres)} {random.choice(apellidos)}"
+
+def generar_correo(nombre):
+    dominios = ["@gmail.com", "@yahoo.com", "@hotmail.com"]
+    correo_base = nombre.replace(" ", ".").lower()
+    return correo_base + random.choice(dominios)
+
+def generar_materias(semestre):
+    materias_por_semestre = {
+        1: ["Álgebra", "Cálculo Diferencial e Integral", "Computadoras y Programación", "Geometría Analítica", "Introducción a la Ingeniería en Computación"],
+        2: ["Álgebra Lineal", "Cálculo Vectorial", "Comunicación", "Emprendimiento 1", "Programación Orientada a Objetos", "Taller de creatividad e innovación"],
+        3: ["Ecuaciones Diferenciales", "Electricidad y Magnetismo (L)","Emprendimiento 2", "Estructura de Datos", "Métodos Numéricos"],
+        4: ["Bases de Datos 1", "Dispositivos Electrónicos (L)", "Emprendimiento 3", "Matemáticas Discretas", "Probabilidad y Estadística"],
+        5: ["Administración de Proyectos", "Diseño Lógico (L)", "Diseño y Análisis de Algoritmos", "Lenguajes Formales y Autómatas", "Programación Web 1"],
+        6: ["Compiladores", "Diseño de Sistemas Digitales (L)", "Ingeniería de Software", "Sistemas Operativos"],
+        7: ["Microprocesadores y Microcontroladores (L)", "Programación Web 2", "Redes de computadoreas 1 (L)", "Sistemas de Información"],
+        8: ["Bases de Datos 2", "Habilidades Directivas", "Programación Móvil 1", "Redes de Computadoras 2"],
+        9: ["Inteligencia Artificial", "Minería de Datos", "Seguridad Informática"]
+        
+    }
+    return materias_por_semestre.get(semestre, ["Materia1", "Materia2", "Materia3", "Materia4", "Materia5"])
+
+# Función para generar 100 alumnos con datos aleatorios
+def generar_alumnos(base_datos):
+    for _ in range(100):
+        num_cuenta = random.randint(400000000, 499999999)
+        nombre = generar_nombre()
+        edad = random.randint(18, 25)
+        correo = generar_correo(nombre)
+        semestre = random.randint(1, 9)
+        materias = generar_materias(semestre)
+        promedio = round(random.uniform(5.0, 10.0), 2)
+        alumno = Alumno(num_cuenta, nombre, edad, correo, semestre, materias, promedio)
+        base_datos.agregar_alumno(alumno)
+
+# Programa principal
+def main():
+    # Crear la base de datos y el árbol
+    base_datos = BaseDeDatosAlumnos()
+    arbol = ArbolBinarioBusqueda()
+
+    # Generar alumnos y almacenarlos en la base de datos
+    generar_alumnos(base_datos)
+
+    # Transferir alumnos de la base de datos al BST
+    base_datos.pasar_a_bst(arbol)
+
+    while True:
+        print("\n--- Menú ---")
+        print("1. Insertar un nuevo alumno")
+        print("2. Buscar alumno por número de cuenta")
+        print("3. Salir")
+        opcion = input("Selecciona una opción: ")
+
+        if opcion == "1":
+            num_cuenta = int(input("Número de cuenta: "))
+            nombre = input("Nombre completo: ")
+            edad = int(input("Edad: "))
+            correo = input("Correo electrónico: ")
+            semestre = int(input("Semestre (1-9): "))
+            materias = generar_materias(semestre)
+            promedio = float(input("Promedio general: "))
+            nuevo_alumno = Alumno(num_cuenta, nombre, edad, correo, semestre, materias, promedio)
+            arbol.insertar(nuevo_alumno)
+            print("Alumno insertado correctamente.")
+
+        elif opcion == "2":
+            num_cuenta = int(input("Número de cuenta: "))
+            alumno = arbol.buscar(num_cuenta)
+            if alumno:
+                print(f"Nombre: {alumno.nombre}")
+                print(f"Materias: {', '.join(alumno.materias)}")
+                print(f"Promedio: {alumno.promedio}")
+            else:
+                print("Alumno no encontrado.")
+
+        elif opcion == "3":
+            break
+
+        else:
+            print("Opción no válida.")
+
+if __name__ == "__main__":
+    main()
