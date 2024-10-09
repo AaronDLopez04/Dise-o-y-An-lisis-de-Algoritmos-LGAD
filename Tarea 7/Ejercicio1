@@ -1,0 +1,16 @@
+A = [-9, 3, 5, -2, 9, -7, 4, 8, 6]
+
+# Inicializar el producto máximo como un valor muy pequeño
+producto_maximo = float('-inf')
+num1, num2 = None, None  # Para almacenar los números con el producto máximo
+
+# Iterar sobre todos los pares posibles en el arreglo
+for i in range(len(A)):
+    for j in range(i + 1, len(A)):  # Evitar repetir pares, comenzando desde i+1
+        producto = A[i] * A[j]
+        if producto > producto_maximo:
+            producto_maximo = producto
+            num1, num2 = A[i], A[j]
+
+# Mostrar el resultado
+print(f"El producto más alto es {producto_maximo}, obtenido con los números {num1} y {num2}.")

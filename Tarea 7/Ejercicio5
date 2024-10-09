@@ -1,0 +1,41 @@
+def cifrado_cesar(texto):
+    alfabeto = 'abcdefghijklmnopqrstuvwxyz'
+    texto = texto.lower()  # Convertir a minúsculas para facilitar el cifrado
+    resultados = []
+    
+    # Probar todos los desplazamientos del 1 al 25
+    for desplazamiento in range(1, 26):
+        texto_cifrado = ''
+        for char in texto:
+            if char in alfabeto:
+                # Encontrar la nueva posición en el alfabeto
+                nueva_posicion = (alfabeto.index(char) + desplazamiento) % 26
+                texto_cifrado += alfabeto[nueva_posicion]
+            else:
+                texto_cifrado += char  # No cifrar caracteres no alfabéticos
+        
+        resultados.append((desplazamiento, texto_cifrado))
+    
+    return resultados
+
+# Texto cifrado
+texto_cifrado = """
+Cupdmzaplil Uikpwuis Icbwuwti lm Tmfpkw oi lmamtxmvilw cu xixms
+xzwbiñwupkw mu si opabwzpi g mu si nwztikpwu lm ucmabzw xipa. 
+Sia bizmia acabiubpdia lm mabi puabpbckpwu xcjspki, icbwuwti g 
+sipki awu si lwkmukpi, si pudmabpñikpwu g si lpncapwu lm si 
+kcsbczi. Mu ms tculw ikilmtpkw ma zmkwuwkpli kwtw cui cupdmzaplil 
+lm mfkmsmukpi. Si CUIT zmaxwulm is xzmamubm g tpzi ms ncbczw 
+kwtw ms xzwgmkbw kcsbczis tia ptxwzbiubm lm Tmfpkw. Si CUIT ma 
+cu maxikpw lm spjmzbilma. Mu mssi am xzikbpki kwbplpiuitmubm 
+ms zmaxmbw, si bwsmziukpi g ms lpiswñw. Si xsczisplil lm plmia 
+g lm xmuaitpmubw ma ixzmkpili kwtw apñuw lm ac zpycmhi g ucuki 
+kwtw nikbwz lm lmjpsplil.
+"""
+
+# Llamar a la función
+resultados = cifrado_cesar(texto_cifrado)
+
+# Imprimir los resultados
+for desplazamiento, texto_cifrado in resultados:
+    print(f"Desplazamiento {desplazamiento}: {texto_cifrado}")
