@@ -1,0 +1,63 @@
+import heapq
+
+# Definimos la distancia Manhattan
+def manhattan_distance(x1, y1, x2, y2):
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# Resuelve el laberinto usando Ramificación y Poda
+def solve_maze(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    visited = set()
+    priority_queue = []
+
+    # Inicializamos con la posición inicial
+    heapq.heappush(priority_queue, (0, start, [start]))  # (distancia estimada, posición actual, camino)
+
+    while priority_queue:
+        cost, (x, y), path = heapq.heappop(priority_queue)
+
+        # Si llegamos a la salida
+        if (x, y) == end:
+            return path
+
+        if (x, y) in visited:
+            continue
+
+        visited.add((x, y))
+
+        # Explorar vecinos
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = x + dx, y + dy
+
+            # Verificar si es válido
+            if 0 <= nx < rows and 0 <= ny < cols and maze[nx][ny] == 0 and (nx, ny) not in visited:
+                estimated_cost = len(path) + 1 + manhattan_distance(nx, ny, end[0], end[1])
+                heapq.heappush(priority_queue, (estimated_cost, (nx, ny), path + [(nx, ny)]))
+
+    return None  # No se encontró solución
+
+# Ejemplo de laberinto (0: camino, 1: obstáculo)
+maze = [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 1, 0, 0, 0, 0, 1],
+    [1, 0, 1, 0, 1, 1, 0, 1],
+    [1, 0, 0, 0, 0, 1, 0, 1],
+    [1, 1, 1, 1, 0, 1, 0, 0],
+    [1, 1, 0, 1, 0, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 1, 1],
+    [1, 1, 0, 1, 1, 0, 1, 1],
+    [1, 1, 0, 1, 1, 1, 1, 1]
+]
+start = (13, 2)  # Posición inicial
+end = (9, 7)    # Posición de salida
+
+solution = solve_maze(maze, start, end)
+if solution:
+    print("Camino encontrado:", solution)
+else:
+    print("No se encontró un camino.")
